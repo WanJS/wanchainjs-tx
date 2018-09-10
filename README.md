@@ -1,34 +1,43 @@
-# SYNOPSIS 
-[![NPM Package](https://img.shields.io/npm/v/ethereumjs-tx.svg?style=flat-square)](https://www.npmjs.org/package/ethereumjs-tx)
-[![Build Status](https://travis-ci.org/ethereumjs/ethereumjs-tx.svg?branch=master)](https://travis-ci.org/ethereumjs/ethereumjs-tx)
-[![Coverage Status](https://img.shields.io/coveralls/ethereumjs/ethereumjs-tx.svg?style=flat-square)](https://coveralls.io/r/ethereumjs/ethereumjs-tx)
-[![Gitter](https://img.shields.io/gitter/room/ethereum/ethereumjs-lib.svg?style=flat-square)](https://gitter.im/ethereum/ethereumjs-lib) or #ethereumjs on freenode  
+# wanchainjs-tx
+ 
+[![CircleCI][circle-image]][circle-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
+[![dependency status][dep-image]][dep-url]
+[![NPM][npm-image]][npm-url]
 
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)  
+[circle-image]: https://circleci.com/gh/WanJS/wanchainjs-tx.svg?style=svg
+[circle-url]: https://circleci.com/gh/WanJS/wanchainjs-tx
+[dep-image]: https://david-dm.org/WanJS/wanchainjs-tx.svg
+[dep-url]: https://david-dm.org/WanJS/wanchainjs-tx
+[coveralls-image]: https://coveralls.io/repos/github/WanJS/wanchainjs-tx/badge.svg?branch=dev
+[coveralls-url]: https://coveralls.io/github/WanJS/wanchainjs-tx?branch=dev
+[npm-image]: http://img.shields.io/npm/v/wanchainjs-tx.svg
+[npm-url]: https://www.npmjs.org/package/wanchainjs-tx
 
 # INSTALL
-`npm install ethereumjs-tx`
+`npm install wanchainjs-tx`
 
 # USAGE
 
-  - [example](https://github.com/ethereumjs/ethereumjs-tx/blob/master/examples/transactions.js)
+  - [example](https://github.com/WanJS/wanchainjs-tx/blob/master/examples/transactions.js)
 
 ```javascript
-const EthereumTx = require('ethereumjs-tx')
+const WanchainTx = require('wanchainjs-tx')
 const privateKey = Buffer.from('e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109', 'hex')
 
 const txParams = {
+  Txtype: '0x01',
   nonce: '0x00',
   gasPrice: '0x09184e72a000', 
   gasLimit: '0x2710',
   to: '0x0000000000000000000000000000000000000000', 
   value: '0x00', 
   data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-  // EIP 155 chainId - mainnet: 1, ropsten: 3
-  chainId: 3
+  // EIP 155 chainId - mainnet: 1, testnet: 3
+  chainId: 1
 }
 
-const tx = new EthereumTx(txParams)
+const tx = new WanchainTx(txParams)
 tx.sign(privateKey)
 const serializedTx = tx.serialize()
 ```

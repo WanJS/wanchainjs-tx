@@ -1,3 +1,3 @@
 require('./fake.js')
 require('./api.js')
-require('./transactionRunner.js')
+// TODO: Fix ethereumjs-tests require('./transactionRunner.js')

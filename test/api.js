@@ -1,24 +1,24 @@
 const tape = require('tape')
-const utils = require('ethereumjs-util')
+const utils = require('wanchainjs-util')
 const rlp = utils.rlp
 const Transaction = require('../index.js')
 const txFixtures = require('./txs.json')
-const txFixturesEip155 = require('./ttTransactionTestEip155VitaliksTests.json')
 tape('[Transaction]: Basic functions', function (t) {
   var transactions = []
 
   t.test('should decode transactions', function (st) {
     txFixtures.slice(0, 3).forEach(function (tx) {
       var pt = new Transaction(tx.raw)
-      st.equal('0x' + pt.nonce.toString('hex'), tx.raw[0])
-      st.equal('0x' + pt.gasPrice.toString('hex'), tx.raw[1])
-      st.equal('0x' + pt.gasLimit.toString('hex'), tx.raw[2])
-      st.equal('0x' + pt.to.toString('hex'), tx.raw[3])
-      st.equal('0x' + pt.value.toString('hex'), tx.raw[4])
-      st.equal('0x' + pt.v.toString('hex'), tx.raw[6])
-      st.equal('0x' + pt.r.toString('hex'), tx.raw[7])
-      st.equal('0x' + pt.s.toString('hex'), tx.raw[8])
-      st.equal('0x' + pt.data.toString('hex'), tx.raw[5])
+      st.equal('0x' + pt.Txtype.toString('hex'), tx.raw[0])
+      st.equal('0x' + pt.nonce.toString('hex'), tx.raw[1])
+      st.equal('0x' + pt.gasPrice.toString('hex'), tx.raw[2])
+      st.equal('0x' + pt.gasLimit.toString('hex'), tx.raw[3])
+      st.equal('0x' + pt.to.toString('hex'), tx.raw[4])
+      st.equal('0x' + pt.value.toString('hex'), tx.raw[5])
+      st.equal('0x' + pt.v.toString('hex'), tx.raw[7])
+      st.equal('0x' + pt.r.toString('hex'), tx.raw[8])
+      st.equal('0x' + pt.s.toString('hex'), tx.raw[9])
+      st.equal('0x' + pt.data.toString('hex'), tx.raw[6])
       transactions.push(pt)
     })
     st.end()
@@ -33,17 +33,17 @@ tape('[Transaction]: Basic functions', function (t) {
 
   t.test('should hash', function (st) {
     var tx = new Transaction(txFixtures[2].raw)
-    st.deepEqual(tx.hash(), new Buffer('375a8983c9fc56d7cfd118254a80a8d7403d590a6c9e105532b67aca1efb97aa', 'hex'))
-    st.deepEqual(tx.hash(false), new Buffer('61e1ec33764304dddb55348e7883d4437426f44ab3ef65e6da1e025734c03ff0', 'hex'))
-    st.deepEqual(tx.hash(true), new Buffer('375a8983c9fc56d7cfd118254a80a8d7403d590a6c9e105532b67aca1efb97aa', 'hex'))
+    st.deepEqual(tx.hash(), new Buffer('9843d712c58072ccf10caf7c9da193096bd64866fad758b2dcb08c6ec32da59a', 'hex'))
+    st.deepEqual(tx.hash(false), new Buffer('6a4e5dcbd770a84919c675bdc9718cfae478edbfd62079353f12681ffc178e95', 'hex'))
+    st.deepEqual(tx.hash(true), new Buffer('9843d712c58072ccf10caf7c9da193096bd64866fad758b2dcb08c6ec32da59a', 'hex'))
     st.end()
   })
 
   t.test('should hash with defined chainId', function (st) {
     var tx = new Transaction(txFixtures[3].raw)
-    st.equal(tx.hash().toString('hex'), '0f09dc98ea85b7872f4409131a790b91e7540953992886fc268b7ba5c96820e4')
-    st.equal(tx.hash(true).toString('hex'), '0f09dc98ea85b7872f4409131a790b91e7540953992886fc268b7ba5c96820e4')
-    st.equal(tx.hash(false).toString('hex'), 'f97c73fdca079da7652dbc61a46cd5aeef804008e057be3e712c43eac389aaf0')
+    st.equal(tx.hash().toString('hex'), 'f6bd4c5f6bd9bc336902331f71112d34affc2bf177780681362dcd3bee7b6b83')
+    st.equal(tx.hash(true).toString('hex'), 'f6bd4c5f6bd9bc336902331f71112d34affc2bf177780681362dcd3bee7b6b83')
+    st.equal(tx.hash(false).toString('hex'), 'f523166e9682d0b020b45f1ce3bd9fbfa29a789b88bcd2ce283edc2a04b159c3')
     st.end()
   })
 
@@ -64,7 +64,7 @@ tape('[Transaction]: Basic functions', function (t) {
 
   t.test('should give a string about not verifing Signatures', function (st) {
     transactions.forEach(function (tx) {
-      st.equals(tx.validate(true).slice(0, 54), 'Invalid Signature gas limit is too low. Need at least ')
+      st.equals(tx.validate(true).slice(0, 17), 'Invalid Signature')
     })
     st.end()
   })
@@ -154,14 +154,14 @@ tape('[Transaction]: Basic functions', function (t) {
     st.equals(tx.getDataFee().toNumber(), 0)
 
     tx = new Transaction(txFixtures[2].raw)
-    st.equals(tx.getDataFee().toNumber(), 2496)
+    st.equals(tx.getDataFee().toNumber(), 416)
 
     st.end()
   })
 
   t.test('should return base fee', function (st) {
     var tx = new Transaction()
-    st.equals(tx.getBaseFee().toNumber(), 53000)
+    st.equals(tx.getBaseFee().toNumber(), 74000)
     st.end()
   })
 
@@ -172,16 +172,6 @@ tape('[Transaction]: Basic functions', function (t) {
       value: 42
     })
     st.equals(tx.getUpfrontCost().toNumber(), 10000000042)
-    st.end()
-  })
-
-  t.test('Verify EIP155 Signature based on Vitalik\'s tests', function (st) {
-    txFixturesEip155.forEach(function (tx) {
-      var pt = new Transaction(tx.rlp)
-      st.equal(pt.hash(false).toString('hex'), tx.hash)
-      st.equal('0x' + pt.serialize().toString('hex'), tx.rlp)
-      st.equal(pt.getSenderAddress().toString('hex'), tx.sender)
-    })
     st.end()
   })
 

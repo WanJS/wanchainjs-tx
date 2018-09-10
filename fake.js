@@ -1,7 +1,7 @@
 'use strict'
 
 const Transaction = require('./index.js')
-const ethUtil = require('ethereumjs-util')
+const ethUtil = require('wanchainjs-util')
 
 /**
  * Creates a new transaction object that doesn't need to be signed
@@ -11,6 +11,7 @@ const ethUtil = require('ethereumjs-util')
  * For Object and Arrays each of the elements can either be a Buffer, a hex-prefixed (0x) String , Number, or an object with a toBuffer method such as Bignum
  * @example
  * var rawTx = {
+ *   Txtype: '0x01',
  *   nonce: '0x00',
  *   gasPrice: '0x09184e72a000',
  *   gasLimit: '0x2710',

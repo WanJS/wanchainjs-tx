@@ -5,8 +5,8 @@ module.exports = function (config) {
     browserNoActivityTimeout: 60000,
     frameworks: ['browserify', 'detectBrowsers', 'tap'],
     files: [
-      './test/api.js',
-      './test/transactionRunner.js'
+      './test/api.js'
+      // TODO: Fix ethereumjs-tests './test/transactionRunner.js'
     ],
     preprocessors: {
       'test/*.js': ['browserify', 'env']
@@ -17,6 +17,8 @@ module.exports = function (config) {
       'karma-env-preprocessor',
       'karma-tap',
       'karma-firefox-launcher',
+      'karma-chrome-launcher',
+      'karma-safari-launcher',
       'karma-detect-browsers'
     ],
     detectBrowsers: {
