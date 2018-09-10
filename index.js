@@ -236,7 +236,6 @@ class Transaction {
    * @param {Buffer} privateKey
    */
   sign (privateKey) {
-
     const msgHash = this.hash(false)
     const sig = wanUtil.ecsign(msgHash, privateKey)
     if (this._chainId > 0) {

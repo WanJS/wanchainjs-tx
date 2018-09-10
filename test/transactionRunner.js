@@ -29,7 +29,6 @@ function normalizeZero (v) {
 
 testing.runTests(function (testData, sst, cb) {
   var tTx = testData.transaction
-
   try {
     var rawTx = ethUtil.toBuffer(testData.rlp)
     var tx = new Tx(rawTx)
@@ -37,6 +36,7 @@ testing.runTests(function (testData, sst, cb) {
       tx._homestead = false
     }
   } catch (e) {
+    console.log(e)
     sst.equal(undefined, tTx, 'should not have any fields ')
     cb()
     return
