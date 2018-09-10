@@ -8,6 +8,7 @@ var tx = new Transaction(null, 1) // mainnet Tx EIP155
 // So now we have created a blank transaction but Its not quiet valid yet. We
 // need to add some things to it. Lets start:
 // notice we don't set the `to` field because we are creating a new contract.
+tx.Txtype = '0x01'
 tx.nonce = 0
 tx.gasPrice = 100
 tx.gasLimit = 1000
@@ -32,6 +33,7 @@ console.log('Total Amount of wei needed:' + feeCost.toString())
 
 console.log('---Serialized TX----')
 console.log(tx.serialize().toString('hex'))
+console.log('Senders Address: ' + tx.getSenderAddress().toString('hex'))
 console.log('--------------------')
 
 // Now that we have the serialized transaction we can get AlethZero to except by
@@ -43,17 +45,17 @@ console.log('--------------------')
 // it directly from the network it will be rlp encoded. You can decode you the rlp
 // module. After that you should have something like
 var rawTx = [
-  '0x00',
-  '0x09184e72a000',
-  '0x2710',
-  '0x0000000000000000000000000000000000000000',
-  '0x00',
-  '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
-  '0x1c',
-  '0x5e1d3a76fbf824220eafc8c79ad578ad2b67d01b0c2425eb1f1347e8f50882ab',
-  '0x5bd428537f05f9830e93792f90ea6a3e2d1ee84952dd96edbae9f658f831ab13'
+  new Buffer('01', 'hex'),
+  new Buffer('', 'hex'),
+  new Buffer('64', 'hex'),
+  new Buffer('0186a0', 'hex'),
+  new Buffer('', 'hex'),
+  new Buffer('', 'hex'),
+  new Buffer('7f4e616d65526567000000000000000000000000000000000000000000000000003057307f4e616d6552656700000000000000000000000000000000000000000000000000573360455760415160566000396000f20036602259604556330e0f600f5933ff33560f601e5960003356576000335700604158600035560f602b590033560f60365960003356573360003557600035335700', 'hex'),
+  new Buffer('1c', 'hex'),
+  new Buffer('dcacc31404aa8d5ef6b1757bbe415a22f1a329d8eb97899cfad7cfd9836b6050', 'hex'),
+  new Buffer('690f6bd64bcc647a38992b6061d8a36f126711912db3dded6cc034e294a0110a', 'hex')
 ]
-
 var tx2 = new Transaction(rawTx)
 
 // Note rlp.decode will actully produce an array of buffers `new Transaction` will

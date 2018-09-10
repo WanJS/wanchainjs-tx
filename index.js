@@ -1,7 +1,7 @@
 'use strict'
-const ethUtil = require('ethereumjs-util')
-const fees = require('ethereum-common/params.json')
-const BN = ethUtil.BN
+const wanUtil = require('wanchainjs-util')
+const fees = require('wanchain-common/params.json')
+const BN = wanUtil.BN
 
 // secp256k1n/2
 const N_DIV_2 = new BN('7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46681b20a0', 16)
@@ -11,6 +11,7 @@ const N_DIV_2 = new BN('7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46
  *
  * @example
  * var rawTx = {
+ *   Txtype: '0x01',
  *   nonce: '0x00',
  *   gasPrice: '0x09184e72a000',
  *   gasLimit: '0x2710',
@@ -31,6 +32,7 @@ const N_DIV_2 = new BN('7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46
  * For Object and Arrays each of the elements can either be a Buffer, a hex-prefixed (0x) String , Number, or an object with a toBuffer method such as Bignum
  *
  * @property {Buffer} raw The raw rlp encoded transaction
+ * @param {Buffer} data.Txtype Txtype (0x01 for normal, 0x06 for private)
  * @param {Buffer} data.nonce nonce number
  * @param {Buffer} data.gasLimit transaction gas limit
  * @param {Buffer} data.gasPrice transaction gas price
@@ -40,7 +42,7 @@ const N_DIV_2 = new BN('7fffffffffffffffffffffffffffffff5d576e7357a4501ddfe92f46
  * @param {Buffer} data.v EC recovery ID
  * @param {Buffer} data.r EC signature parameter
  * @param {Buffer} data.s EC signature parameter
- * @param {Number} data.chainId EIP 155 chainId - mainnet: 1, ropsten: 3
+ * @param {Number} data.chainId EIP 155 chainId - mainnet: 1, testnet: 3
  * */
 
 class Transaction {
@@ -48,6 +50,11 @@ class Transaction {
     data = data || {}
     // Define Properties
     const fields = [{
+      name: 'Txtype',
+      length: 32,
+      allowLess: true,
+      default: new Buffer([])
+    }, {
       name: 'nonce',
       length: 32,
       allowLess: true,
@@ -104,7 +111,7 @@ class Transaction {
      * @name serialize
      */
     // attached serialize
-    ethUtil.defineProperties(this, fields, data)
+    wanUtil.defineProperties(this, fields, data)
 
     /**
      * @property {Buffer} from (read only) sender address of this transaction, mathematically derived from other parameters.
@@ -118,7 +125,7 @@ class Transaction {
     })
 
     // calculate chainId from signature
-    let sigV = ethUtil.bufferToInt(this.v)
+    let sigV = wanUtil.bufferToInt(this.v)
     let chainId = Math.floor((sigV - 35) / 2)
     if (chainId < 0) chainId = 0
 
@@ -137,7 +144,7 @@ class Transaction {
 
   /**
    * Computes a sha3-256 hash of the serialized tx
-   * @param {Boolean} [includeSignature=true] whether or not to inculde the signature
+   * @param {Boolean} [includeSignature=true] whether or not to include the signature
    * @return {Buffer}
    */
   hash (includeSignature) {
@@ -160,12 +167,12 @@ class Transaction {
         items = this.raw
         this.raw = raw
       } else {
-        items = this.raw.slice(0, 6)
+        items = this.raw.slice(0, 7)
       }
     }
 
     // create hash
-    return ethUtil.rlphash(items)
+    return wanUtil.rlphash(items)
   }
 
   /**
@@ -185,7 +192,7 @@ class Transaction {
       return this._from
     }
     const pubkey = this.getSenderPublicKey()
-    this._from = ethUtil.publicToAddress(pubkey)
+    this._from = wanUtil.publicToAddress(pubkey)
     return this._from
   }
 
@@ -212,11 +219,11 @@ class Transaction {
     }
 
     try {
-      let v = ethUtil.bufferToInt(this.v)
+      let v = wanUtil.bufferToInt(this.v)
       if (this._chainId > 0) {
         v -= this._chainId * 2 + 8
       }
-      this._senderPubKey = ethUtil.ecrecover(msgHash, v, this.r, this.s)
+      this._senderPubKey = wanUtil.ecrecover(msgHash, v, this.r, this.s)
     } catch (e) {
       return false
     }
@@ -229,8 +236,9 @@ class Transaction {
    * @param {Buffer} privateKey
    */
   sign (privateKey) {
+
     const msgHash = this.hash(false)
-    const sig = ethUtil.ecsign(msgHash, privateKey)
+    const sig = wanUtil.ecsign(msgHash, privateKey)
     if (this._chainId > 0) {
       sig.v += this._chainId * 2 + 8
     }

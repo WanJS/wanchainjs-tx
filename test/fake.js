@@ -1,16 +1,17 @@
 const tape = require('tape')
-const utils = require('ethereumjs-util')
+const utils = require('wanchainjs-util')
 const FakeTransaction = require('../fake.js')
 
 // Use private key 0x0000000000000000000000000000000000000000000000000000000000000001 as 'from' Account
 var txData = {
-  data: '0x7cf5dab00000000000000000000000000000000000000000000000000000000000000005',
-  gasLimit: '0x15f90',
-  gasPrice: '0x1',
+  Txtype: '0x01',
   nonce: '0x01',
+  gasPrice: '0x1',
+  gasLimit: '0x15f90',
   to: '0xd9024df085d09398ec76fbed18cac0e1149f50dc',
   value: '0x0',
-  from: '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf',
+  data: '0x7cf5dab00000000000000000000000000000000000000000000000000000000000000005',
+  from: '0xa6d30209231c635e4316a4a6ae67220c4259e5ac',
   v: '0x1c',
   r: '0x25641558260ac737ea6d800906c6d085a801e5e0f0952bf93978d6fa468fbdfe',
   s: '0x5d0904b8f9cfc092805df0cde2574d25e2c5fc28907a9a4741b3e857b68b0778'
@@ -21,10 +22,10 @@ tape('[FakeTransaction]: Basic functions', function (t) {
     st.plan(3)
     var tx = new FakeTransaction(txData)
     var hash = tx.hash()
-    var cmpHash = Buffer.from('f74b039f6361c4351a99a7c6a10867369fe6701731d85dc07c15671ac1c1b648', 'hex')
+    var cmpHash = Buffer.from('bd82266b03c2fa9951a11748d42bd6bdde6e26db15db7d094cc93e250c17f465', 'hex')
     st.deepEqual(hash, cmpHash, 'should create hash with includeSignature=true (default)')
     var hash2 = tx.hash(false)
-    var cmpHash2 = Buffer.from('0401bf740d698674be321d0064f92cd6ebba5d73d1e5e5189c0bebbda33a85fe', 'hex')
+    var cmpHash2 = Buffer.from('1efdd00ca0b18b5cfa1638319592538f805015a7be843eea6878bbe60ed59aa5', 'hex')
     st.deepEqual(hash2, cmpHash2, 'should create hash with includeSignature=false')
     st.notDeepEqual(hash, hash2, 'previous hashes should be different')
   })
@@ -35,10 +36,10 @@ tape('[FakeTransaction]: Basic functions', function (t) {
     st.plan(3)
     var tx = new FakeTransaction(txDataNoFrom)
     var hash = tx.hash()
-    var cmpHash = Buffer.from('80a2ca70509414908881f718502e6bbb3bc67f416abdf972ea7c0888579be7b9', 'hex')
+    var cmpHash = Buffer.from('0925e24aeace7943c9e3bdb14406bec566f5bc37113bd1ad076cdd238df211b1', 'hex')
     st.deepEqual(hash, cmpHash, 'should create hash with includeSignature=true (default)')
     var hash2 = tx.hash(false)
-    var cmpHash2 = Buffer.from('0401bf740d698674be321d0064f92cd6ebba5d73d1e5e5189c0bebbda33a85fe', 'hex')
+    var cmpHash2 = Buffer.from('1efdd00ca0b18b5cfa1638319592538f805015a7be843eea6878bbe60ed59aa5', 'hex')
     st.deepEqual(hash2, cmpHash2, 'should create hash with includeSignature=false')
     st.notDeepEqual(hash, hash2, 'previous hashes should be different')
   })
