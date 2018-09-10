@@ -7,9 +7,11 @@
     "coverage": "istanbul cover ./test/index.js",
     "coveralls": "npm run coverage && coveralls <coverage/lcov.info",
     "lint": "standard",
-    "test": "npm run test:node && npm run test:browser",
+    "test": "npm run test:unit && npm run test:browser",
     "test:browser": "karma start karma.conf.js",
-    "test:node": "tape ./test/index.js",
+    "test:unit": "tape ./test/index.js",
+    "test:coverage": "nyc npm run test:unit && npm run test:coveralls-upload",
+    "test:coveralls-upload": "if [ $COVERALLS_REPO_TOKEN ]; then nyc report --reporter=text-lcov | coveralls; fi",
     "build:es5": "babel index.js --source-root ./ -d ./es5",
     "build:docs": "documentation --github  -f md ./index.js > ./docs/index.md && contributor"
   },
@@ -42,6 +44,7 @@
     "karma-firefox-launcher": "^1.0.0",
     "karma-tap": "^2.0.1",
     "minimist": "^1.2.0",
+    "nyc": "^13.0.1",
     "standard": "^7.1.2",
     "tape": "^4.0.3"
   },
